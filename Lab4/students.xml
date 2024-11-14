@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfStudent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Student>
+    <LastName>Биба</LastName>
+    <FirstName>Боба</FirstName>
+    <School>1</School>
+    <Score>100</Score>
+  </Student>
+  <Student>
+    <LastName>Слепой</LastName>
+    <FirstName>Йопелс</FirstName>
+    <School>1</School>
+    <Score>5</Score>
+  </Student>
+  <Student>
+    <LastName>Старый</LastName>
+    <FirstName>Пип</FirstName>
+    <School>2</School>
+    <Score>100</Score>
+  </Student>
+  <Student>
+    <LastName>Клузо</LastName>
+    <FirstName>Обиван</FirstName>
+    <School>2</School>
+    <Score>100</Score>
+  </Student>
+  <Student>
+    <LastName>Чикаго</LastName>
+    <FirstName>Лос</FirstName>
+    <School>99</School>
+    <Score>1</Score>
+  </Student>
+</ArrayOfStudent>
