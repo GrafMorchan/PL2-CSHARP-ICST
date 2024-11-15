@@ -76,30 +76,29 @@ public static class DataProcessor
     }
 
     // Метод для подсчета количества различных элементов в списке
-    public static int CountDistinctElements(List<int> list)
+    public static int CountDistinctElements<T>(List<T> list)
     {
-        return list.Distinct().Count(); // Используем Distinct для получения уникальных элементов
+        return list.Distinct().Count();
     }
 
     // Метод для замены соседей в LinkedList
-    public static void ReplaceNeighbors(LinkedList<int> linkedList, int e, int f)
+    public static void ReplaceNeighbors<T>(LinkedList<T> linkedList, T e, T f)
     {
-        LinkedListNode<int> node = linkedList.Find(e); // Находим узел с значением e
-        if (node != null) // Если узел найден
+        LinkedListNode<T> node = linkedList.Find(e);
+        if (node != null)
         {
-            // Замена соседей, если они существуют и не равны e
-            if (node.Previous != null && node.Next != null && node.Previous.Value != node.Next.Value)
+            if (node.Previous != null && node.Next != null && !node.Previous.Value.Equals(node.Next.Value))
             {
                 node.Previous.Value = f;
                 node.Next.Value = f;
             }
-            else if (node.Previous != null && node.Next == null && node.Previous.Value != e)
+            else if (node.Previous != null && node.Next == null && !node.Previous.Value.Equals(e))
             {
-                node.Previous.Value = f; // Замена предыдущего узла
+                node.Previous.Value = f;
             }
-            else if (node.Previous == null && node.Next != null && node.Next.Value != e)
+            else if (node.Previous == null && node.Next != null && !node.Next.Value.Equals(e))
             {
-                node.Next.Value = f; // Замена следующего узла
+                node.Next.Value = f;
             }
         }
     }
@@ -256,21 +255,37 @@ public static class DataProcessor
     // Метод для выполнения задачи 1
     private static void Task1(bool loadSampleData)
     {
-        List<int> list = loadSampleData ? GetSampleList1() : GetListFromUser(); // Получение списка
-        int distinctElementsCount = CountDistinctElements(list); // Подсчет уникальных элементов
+        List<int> list; // Явно указываем тип int
+        if (loadSampleData)
+        {
+            list = GetSampleList1();
+        }
+        else
+        {
+            list = GetListFromUser<int>(); // Теперь явно указываем тип int
+        }
+        int distinctElementsCount = CountDistinctElements(list);
         Console.WriteLine($"Количество различных элементов: {distinctElementsCount}");
     }
 
     // Метод для выполнения задачи 2
     private static void Task2(bool loadSampleData)
     {
-        LinkedList<int> linkedList = loadSampleData ? GetSampleLinkedList1() : GetLinkedListFromUser(); // Получение LinkedList
+        LinkedList<int> linkedList; // Объявление типа int явно
+        if (loadSampleData)
+        {
+            linkedList = GetSampleLinkedList1();
+        }
+        else
+        {
+            linkedList = GetLinkedListFromUser<int>(); // Указание типа int
+        }
 
-        // Получение значений E и F от пользователя
-        int e = GetIntInput("Введите E:", int.MinValue, int.MaxValue);
-        int f = GetIntInput("Введите F:", int.MinValue, int.MaxValue);
-
-        ReplaceNeighbors(linkedList, e, f); // Замена соседей
+        Console.WriteLine("Введите E: ");
+        int e = int.Parse(Console.ReadLine());
+        Console.WriteLine("Введите F: ");
+        int f = int.Parse(Console.ReadLine());
+        ReplaceNeighbors(linkedList, e, f);
         Console.WriteLine($"Связный список после замены: {string.Join(", ", linkedList)}");
     }
 
@@ -317,18 +332,44 @@ public static class DataProcessor
     }
 
     // Методы для получения входных данных от пользователя
-    private static List<int> GetListFromUser()
+    private static List<T> GetListFromUser<T>()
     {
-        Console.WriteLine("Введите элементы списка, разделенные запятыми (например, 1,2,3):");
+        Console.WriteLine($"Введите элементы списка типа {typeof(T).Name}, разделенные запятыми:");
         string input = Console.ReadLine();
-        return ParseCommaSeparatedIntegers(input); // Парсинг ввода
+        try
+        {
+            return input.Split(',').Select(x => (T)Convert.ChangeType(x.Trim(), typeof(T))).ToList();
+        }
+        catch (FormatException)
+        {
+            Console.WriteLine("Некорректный формат ввода.");
+            return new List<T>();
+        }
+        catch (InvalidCastException)
+        {
+            Console.WriteLine($"Невозможно преобразовать ввод в тип {typeof(T).Name}");
+            return new List<T>();
+        }
     }
 
-    private static LinkedList<int> GetLinkedListFromUser()
+    private static LinkedList<T> GetLinkedListFromUser<T>()
     {
-        Console.WriteLine("Введите элементы LinkedList, разделенные запятыми (например, 1,2,3):");
+        Console.WriteLine($"Введите элементы LinkedList типа {typeof(T).Name}, разделенные запятыми:");
         string input = Console.ReadLine();
-        return new LinkedList<int>(ParseCommaSeparatedIntegers(input)); // Парсинг и создание LinkedList
+        try
+        {
+            return new LinkedList<T>(input.Split(',').Select(x => (T)Convert.ChangeType(x.Trim(), typeof(T))).ToList());
+        }
+        catch (FormatException)
+        {
+            Console.WriteLine("Некорректный формат ввода.");
+            return new LinkedList<T>(); // Возвращаем пустой список при ошибке
+        }
+        catch (InvalidCastException)
+        {
+            Console.WriteLine($"Невозможно преобразовать ввод в тип {typeof(T).Name}");
+            return new LinkedList<T>();
+        }
     }
 
     private static HashSet<HashSet<string>> GetCooperativesFromUser(int numCooperatives)
